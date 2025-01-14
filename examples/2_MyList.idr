@@ -7,7 +7,12 @@
 --
 -- In the standard library, there is the `::` operator to create `List`s.
 infixr 10 ##
+-- Here `a` is a type parameter which makes `MyList` a polymorphic type
 data MyList a = Nil | (##) a (MyList a)
+-- equivalently
+-- data MyList a where
+--   Nil : MyList
+--   (##) : a -> MyList a -> MyList a
 
 empty_list : MyList Int
 empty_list = Nil
