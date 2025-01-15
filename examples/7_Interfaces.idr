@@ -21,7 +21,10 @@
 interface MyShow a where
   my_show : a -> String
 
-interface MyJson a where
+-- Interfaces can be extended. For example, we could define
+-- a `MyJson` interface for types that satisfy `MyShow` as
+-- follows:
+interface MyShow a => MyJson a where
   parse : String -> Maybe a
 
 -- By default parameters that are not explicitly ascribed a type in an
