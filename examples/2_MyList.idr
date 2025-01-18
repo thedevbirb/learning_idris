@@ -19,3 +19,8 @@ empty_list = Nil
 
 short_list : MyList Int
 short_list = 1 ## 2 ## 3 ## Nil
+
+-- We can also define concatenation between lists:
+concat : List a -> List a -> List a
+concat Nil ys = ys
+concat (x :: xs) ys = x :: (concat xs ys)
