@@ -78,4 +78,24 @@ MyMonad Maybe where
 
 MyMonad List where
   (*>>=) [] f = []
-  (*>>=) (x :: xs) f = (f x) ++ (*>>= xs f)
+  (*>>=) (x :: xs) f = (f x) ++ ((*>>=) xs f)
+
+-- Know we explore the equivalent of Rust's `Result`
+data MyEither e t = MyLeft e | MyRight t
+
+-- While Either is a bifunctor, if we fix a type variable
+-- it becomes a functor e.g. Either String : Type -> Type
+-- This is implementing the functor interface via pattern matching
+-- to every type constructor like `Either e`
+Functor (MyEither e) where
+  map f (MyLeft x) = MyLeft x
+  map f (MyRight t) = MyRight (f t)
+
+Applicative (MyEither e) where
+  pure t = MyRight t
+  (<*>) _ (MyLeft e) = MyLeft e
+  (<*>) f (MyRight t) =  (f MyRight t)
+
+Monad (MyEither e) where
+  (>>=) (MyLeft e) _ = MyLeft e
+  (>>=) (MyRight t) f = f t
