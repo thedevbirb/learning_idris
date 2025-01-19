@@ -93,9 +93,38 @@ Functor (MyEither e) where
 
 Applicative (MyEither e) where
   pure t = MyRight t
-  (<*>) _ (MyLeft e) = MyLeft e
-  (<*>) f (MyRight t) =  (f MyRight t)
+  -- Recall that (<*>) :: Either e (a -> b) -> Either e a -> Either e b
+  -- Short-circuit returning `e`
+  (<*>) (MyLeft e) _ = MyLeft e
+  -- Short-circuit returning `e`
+  (<*>) (MyRight f) (MyLeft e) = MyLeft e
+  -- Apply
+  (<*>) (MyRight f) (MyRight a) = MyRight (f a)
 
 Monad (MyEither e) where
   (>>=) (MyLeft e) _ = MyLeft e
   (>>=) (MyRight t) f = f t
+
+-- The `bind` operator allows to chain sequential computations carrying their context
+-- and do short-circuit.
+
+-- Example. a `do` block is a syntax sugar where
+-- `x <- m a === m a >>= \x -> ...
+computation : Either String Int
+computation = do
+  x <- Right 10
+  y <- if x > 5 then Left "Too large" else Right (x + 1)
+  z <- Right (y * 2)
+  pure z -- In Haskell `pure` is called `result` and here would be intuitive.
+
+-- Desugared version
+computation2 : Either String Int
+computation2 =
+  Right 10 >>= \x => -- x : String
+  -- this expression returns Either String Int so it can be accepted by `>>=`
+  -- Left String is returned
+  (if x > 5 then Left "Too large" else Right (x + 1)) >>= \y =>
+  -- Same logic here, but since the previous result matches `Left e` it is propagated again
+  -- and the function is not executed
+  Right (y + 2) >>= \z =>
+  pure z
