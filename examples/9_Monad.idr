@@ -88,13 +88,13 @@ data MyEither e t = MyLeft e | MyRight t
 -- This is implementing the functor interface via pattern matching
 -- to every type constructor like `Either e`
 Functor (MyEither e) where
-  map f (MyLeft x) = MyLeft x
+  map f (MyLeft x) = MyLeft x -- This is still of type `Either a b`
   map f (MyRight t) = MyRight (f t)
 
 Applicative (MyEither e) where
   pure t = MyRight t
   -- Recall that (<*>) :: Either e (a -> b) -> Either e a -> Either e b
-  -- Short-circuit returning `e`
+  -- Here there is no function `MyRight (a -> b). Short-circuit returning `MyLeft e`
   (<*>) (MyLeft e) _ = MyLeft e
   -- Short-circuit returning `e`
   (<*>) (MyRight f) (MyLeft e) = MyLeft e
@@ -121,10 +121,12 @@ computation = do
 computation2 : Either String Int
 computation2 =
   Right 10 >>= \x => -- x : String
-  -- this expression returns Either String Int so it can be accepted by `>>=`
+  -- this expression returns Either String Int so it can be accepted by `>>=`,
+  -- we're chaining functions as usual like `g (f x)`.
   -- Left String is returned
   (if x > 5 then Left "Too large" else Right (x + 1)) >>= \y =>
   -- Same logic here, but since the previous result matches `Left e` it is propagated again
   -- and the function is not executed
   Right (y + 2) >>= \z =>
+  -- `z` has been unwrapped, re-insert it in its context.
   pure z
