@@ -112,7 +112,8 @@ Monad (MyEither e) where
 -- `x <- m a === m a >>= \x -> ...
 computation : Either String Int
 computation = do
-  x <- Right 10
+  let a = 5 -- Usage of this `a` will be de-sugared into an anonymous function valued at `5`
+  x <- Right (a * 2)
   y <- if x > 5 then Left "Too large" else Right (x + 1)
   z <- Right (y * 2)
   pure z -- In Haskell `pure` is called `result` and here would be intuitive.
@@ -120,7 +121,8 @@ computation = do
 -- Desugared version
 computation2 : Either String Int
 computation2 =
-  Right 10 >>= \x => -- x : String
+  -- The lambda evaluates to a Int, so this is correct.
+  Right ((\a => a * 2) 5) >>= \x => -- x : String
   -- this expression returns Either String Int so it can be accepted by `>>=`,
   -- we're chaining functions as usual like `g (f x)`.
   -- Left String is returned
