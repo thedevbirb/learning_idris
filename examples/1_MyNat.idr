@@ -29,9 +29,9 @@ add Z y = y
 add (MyS x) y = MyS (add x y)
 
 -- The way `MyNat` is defined is by specifying immediately the constructors for
--- it. However we can also define `MyNat2`, by saying that it is a type with
--- `data MyNat2 : Type` and then defining the constructors for it using the
--- `where` keyword.
+-- it. However we can also define `MyNat2`, by saying that it is a type
+-- (without parameters) with `data MyNat2 : Type` and then defining the
+-- constructors for it using the `where` keyword.
 data MyNat2 : Type where
   Z2 : MyNat2
   MyS2 : MyNat2 -> MyNat2
