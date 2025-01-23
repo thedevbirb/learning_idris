@@ -1,12 +1,10 @@
--- `Fin` is a dependent type that represents a finite set A dependent type is a
+-- `Fin` is a dependent type that represents a finite set. A dependent type is a
 -- type that depends on a value. It can be considered as a function that takes
 -- a value and returns a type.
 data Fin : Nat -> Type where
-   -- FZ is a "symbolic" constructor for a value of type Fin (S k). "k" is a
-   -- type variable.
+   -- FZ is a "symbolic" constructor for a value of type Fin (S k). "k"
+   -- is a generic value of type Nat.
    FZ : Fin (S k)
-   -- NOTE: k is a type variable. It is not a value, as such it can be
-   -- different from the "k" above.
    FS : Fin k -> Fin (S k)
 
 pronto_pronto : Fin 3
