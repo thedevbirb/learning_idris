@@ -1,3 +1,5 @@
+module Interfaces
+
 -- Interfaces are equivalent to haskell typeclasses.
 -- An interface takes a type parameter and defines a set of functions
 -- that use such type parameter. It describes a contract or capability that a

@@ -1,3 +1,5 @@
+module Maybe
+
 -- `Maybe` is like Rust's `Option<T>`.
 data MyMaybe a = MyJust a | MyNothing
 -- equivalently

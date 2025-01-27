@@ -1,3 +1,5 @@
+module MyNat
+
 -- Defines a simple type for natural numbers and addition on them
 -- In the most abstract sense, the collection of natural numbers consists of an
 -- abstract symbol `Z` and a successor function `S` that takes a natural number

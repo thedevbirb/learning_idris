@@ -1,3 +1,5 @@
+module Monad
+
 -- We'll use this reference for the definition of a monad:
 -- https://en.wikipedia.org/wiki/Monad_(category_theory)
 -- That is, we consider a monad as a monoid in the category of endofunctor in

@@ -1,3 +1,5 @@
+module Functors
+
 -- In Idris2, `Type` is the kind that represents all concrete types that can
 -- classify values at runtime. These include types like Int, String, Bool, or
 -- user-defined data types, which define the shape and behavior of runtime

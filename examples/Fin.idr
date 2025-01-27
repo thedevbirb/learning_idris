@@ -1,3 +1,5 @@
+module Fin
+
 -- `Fin` is a dependent type that represents a finite set. A dependent type is a
 -- type that depends on a value. It can be considered as a function that takes
 -- a value and returns a type.

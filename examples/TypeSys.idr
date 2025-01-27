@@ -1,3 +1,5 @@
+module TypeSys
+
 -- This type represents a dependent types system `MyLangTypes` for a language
 -- `MyLang`, that can be manipulated inside Idris2 itself.
 -- First, we define a type `MyLangTypes` that represents the types of the

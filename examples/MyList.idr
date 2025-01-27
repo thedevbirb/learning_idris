@@ -1,3 +1,5 @@
+module MyList
+
 -- We define a custom polymorphic list type
 -- We define first a custom right-infix operator ## with precedence 10
 -- Infix means that the operator can be placed between its arguments. Or can be

@@ -1,3 +1,5 @@
+module DependentPairs
+
 import Data.Vect
 
 -- Dependent pairs allow the type of the second element of a pair

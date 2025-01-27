@@ -1,0 +1,26 @@
+package learning_idris
+
+version = 0.0.1
+
+authors = "thedevbirb"
+
+--readme = "README.md"
+
+modules
+ = Main
+ , MyNat
+ , MyList
+ , Fin
+ , TypeSys
+ , Maybe
+ , DependentPairs
+ , Functors
+ , Interfaces
+ , Monad
+ , DependentPairs
+
+sourcedir = "examples"
+
+main = Main
+
+executable = Main
