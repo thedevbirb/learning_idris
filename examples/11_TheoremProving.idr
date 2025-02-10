@@ -41,3 +41,36 @@ plus_right_identity Z = MyRefl
 -- that is `S (my_plus k Z) = S k`. To return that congruence we can use
 -- `my_cong` with `S`. We can use our assumption as a proof that `my_plus k Z = k`.
 plus_right_identity (S k) = my_cong S (plus_right_identity k)
+
+-- What we've done above is a proof by induction of a proposition about natural
+-- numbers. Each of these proofs look the same: it takes the form of a base
+-- case and an inductive step. In the base case, we show that the proposition
+-- holds for `Z`. In the inductive step, we assume the proposition holds for `k>=0`,
+-- and if we can use it to prove that it holds for `k+1`, then we've proven it
+-- for all natural numbers.
+-- Idris type system is flexible enough that we can precisily encode inductive
+-- definition and proofs:
+nat_induction :
+  (prop : Nat -> Type) ->                 -- Property to show
+  (prop Z) ->                             -- Base case
+  ((k : Nat) -> prop k -> prop (S k)) ->  -- Inductive step
+  (x : Nat) ->                            -- The property for any `x`.
+  (prop x)
+-- The base case is with `x = Z` is `p_Z` itself.
+nat_induction prop p_Z p_S Z = p_Z
+-- If `x = S k`, then to return `prop (S k)` we can use `p_S`.
+nat_induction prop p_Z p_S (S k) = p_S k (nat_induction prop p_Z p_S k) 
+
+-- For example, let's redefine "plus" using this framework by induction on `n`. 
+-- Note that in the definition above, if the return type is `Equal a b` 
+-- then it's a proof, otherwise a definition.
+--
+-- The definition here says: "for each `x`, `plus x m` returns a `Nat`.
+plus_ind : Nat -> Nat -> Nat
+plus_ind n m = nat_induction 
+   (\x => Nat)
+   m                      -- Base case, plus_ind Z m
+   (\k, k_rec => S k_rec) -- Inductive step: in each step we call the successor on the previous case until we are
+                          -- in the base case with `m`. The sum `n + m` is calling `n` times the function `S`
+                          -- on `m`.
+   n                      -- How many times we should repeat.
