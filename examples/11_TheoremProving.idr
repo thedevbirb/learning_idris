@@ -8,15 +8,19 @@ data MyEqual : a -> b -> Type where
   -- by the type definition itself.
   MyRefl : MyEqual x x
 
--- Equality is transitive. `MyRefl` works because all symbols are actually the
+-- Equality is transitive. `Refl` works because all symbols are actually the
 -- same.
-my_trans : MyEqual x y -> MyEqual y z -> MyEqual x z
-my_trans MyRefl MyRefl = MyRefl
+my_trans : x = y -> y = z -> x = z
+my_trans Refl Refl = Refl
+
+-- Equality is symmetric. If `x = y` then `y = x`.
+my_sym : x = y -> y = x
+my_sym Refl = Refl
 
 -- We can also express that if you have a function and two equal
 -- arguments, that the result is equal.
-my_cong : (f : a -> b) -> MyEqual x y -> MyEqual (f x) (f y)
-my_cong f MyRefl = MyRefl
+my_cong : (f : a -> b) -> x = y -> f x = f y
+my_cong f Refl = Refl
 
 -- Recall the definition of `plus` of natural numbers
 my_plus : Nat -> Nat -> Nat
@@ -28,19 +32,31 @@ my_plus (S n) m = S (my_plus n m)
 -- This is indeed a function that takes two natural numbers and returns an `Equal`ity.
 --
 -- We never shown that `Z` is right identity for `plus`.
--- plus_is_commutative : (n, m : Nat) -> MyEqual (my_plus n m) (my_plus m n)
--- plus_is_commutative Z m = MyRefl
--- plus_is_commutative (S n) m = ?todo
+-- plus_commutes : (n, m : Nat) -> Equal (my_plus n m) (my_plus m n)
+-- plus_commutes Z m = ?plus_commutes_Z
+-- plus_commutes (S n) m = ?plus_commutes_S
 
 -- Here we show that `Z` is the right identity for `plus`. That is,
 -- we need to show that `plus n Z = n` for each natural.
-plus_right_identity : (n : Nat) -> MyEqual (my_plus n Z) n
--- Base case. Here, `n = Z` so `my_plus Z Z = Z` and `MyRefl` is appropriate.
-plus_right_identity Z = MyRefl
--- We need to return `my_plus (S k) Z = S k`. By definition of `plus`,
--- that is `S (my_plus k Z) = S k`. To return that congruence we can use
--- `my_cong` with `S`. We can use our assumption as a proof that `my_plus k Z = k`.
-plus_right_identity (S k) = my_cong S (plus_right_identity k)
+plus_commutes_Z : (n : Nat) -> n = plus n Z
+-- Base case. Here, `n = Z` so `Z = plus Z Z` and `Refl` is appropriate.
+plus_commutes_Z Z = Refl
+-- We need to return `S k = plus (S k) Z`. By definition of `plus`,
+-- that is `S k = S (plus k Z)`. To return that congruence we can use
+-- `cong` with `S`. We can use our assumption as a proof that `k = plus k Z`.
+--
+-- plus_commutes_Z (S k) = cong S (plus_commutes_Z k)
+--
+-- Another way is the following: `(S k) = plus (S k) Z` reduces to
+-- `S k = S (plus k Z)`. Our induction hypothesis tells us that
+-- `k = plus k Z`, so `sym (plus_commutes_Z k)` returns `plus k Z = k`.
+--
+-- `rewrite` allows us to replace equal terms in a proof, in our case
+-- `(S k) = S (plus k Z)`. By providing an equality `plus k Z = k`,
+-- we know have to prove `S k = S k`, which can be done by `Refl`.
+-- NOTE: the syntax isn't super intuitive yet.
+plus_commutes_Z (S k)
+   = rewrite sym (plus_commutes_Z k) in Refl
 
 -- What we've done above is a proof by induction of a proposition about natural
 -- numbers. Each of these proofs look the same: it takes the form of a base
