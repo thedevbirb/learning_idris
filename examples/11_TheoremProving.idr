@@ -37,9 +37,9 @@ my_plus (S n) m = S (my_plus n m)
 -- plus_commutes (S n) m = ?plus_commutes_S
 
 -- Here we show that `Z` is the right identity for `plus`. That is,
--- we need to show that `plus n Z = n` for each natural.
-plus_commutes_Z : (n : Nat) -> n = plus n Z
--- Base case. Here, `n = Z` so `Z = plus Z Z` and `Refl` is appropriate.
+-- we need to show that `m = plus m Z` for each natural.
+plus_commutes_Z : (m : Nat) -> m = plus m Z
+-- Base case. Here, `m = Z` so `Z = plus Z Z` and `Refl` is appropriate.
 plus_commutes_Z Z = Refl
 -- We need to return `S k = plus (S k) Z`. By definition of `plus`,
 -- that is `S k = S (plus k Z)`. To return that congruence we can use
@@ -90,3 +90,24 @@ plus_ind n m = nat_induction
                           -- in the base case with `m`. The sum `n + m` is calling `n` times the function `S`
                           -- on `m`.
    n                      -- How many times we should repeat.
+
+-- We need another lemma before proving that plus commutes. That is because
+-- in the inductive step, we need to show `S (plus k m) = plus m (S k)`
+-- By inductive hypothesis, this reduces to `S (plus m k) = plus m (S k)`
+-- where the second equality should be proved from scratch using induction again but on `m`.
+plus_commutes_S : (k, m : Nat) -> S (plus m k) = plus m (S k)
+plus_commutes_S k Z = Refl
+-- We need to prove `(S plus (S j) k) = plus (S j) (S k)` which is
+-- `S (S (plus j k)) = S (plus j (S k))`. By inductive hypothesis,
+-- `S (plus j k) = plus j (S k)` wo we can replace it in the proof.
+plus_commutes_S k (S j) = rewrite plus_commutes_S k j in Refl
+
+-- We can finally prove that plus commutes
+plus_commutes : (n, m : Nat) -> plus n m = plus m n
+-- We need to show `plus Z m = m = plus m Z
+plus_commutes Z m = plus_commutes_Z m
+-- We need to show `S (plus k m) = plus m (S k)
+-- By inductive hypothesis `plus k m = plus m k`, so we're going
+-- to use that in the `rewrite`. Then we show plus m k = plus m (S k)
+-- using our lemma.
+plus_commutes (S k) m = rewrite plus_commutes k m in plus_commutes_S k m
